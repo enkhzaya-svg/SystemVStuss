@@ -3,108 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Байгууллагын Системүүдийн Харьцуулалт</title>
+    <title>Системүүдийн Харьцуулалт | TUSS.io Тэргүүлэгч</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Energetic & Playful -->
-    <!-- Application Structure Plan: Энэхүү SPA нь байгууллагын шийдвэр гаргагчдад зориулсан интерактив хөтөч хэлбэрээр бүтээгдсэн. Бүтэц нь: 1. Hero (Оршил) 2. Interactive Selection (Хэрэгцээнд суурилсан зөвлөгөө) 3. Stacked Bar Chart (Функцийн цар хүрээний харьцуулалт) 4. Filterable Matrix (Нарийвчилсан боломжууд) 5. Pricing Dashboard (Үнийн харьцуулалт). -->
-    <!-- Visualization & Content Choices: 1. Зөвлөх хэсэг -> Зорилго: Чиглүүлэх -> Арга: Интерактив картууд. 2. Функцийн график -> Зорилго: Харьцуулах -> Арга: Stacked Bar Chart. 3. Чеклист -> Зорилго: Эрэмбэлэх -> Арга: HTML Хүснэгт + JS шүүлтүүр. 4. Үнэ -> Зорилго: Харьцуулах -> Арга: Grouped Bar Chart. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #fafaf9; color: #1c1917; overflow-x: hidden; }
-        .chart-container { position: relative; width: 100%; max-width: 900px; margin-left: auto; margin-right: auto; height: 45vh; max-height: 450px; min-height: 350px; }
-        @media (max-width: 768px) { .chart-container { height: 50vh; } }
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f5f5f4; }
-        ::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #a8a29e; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        .chart-container { position: relative; width: 100%; height: 400px; }
+        .glass-effect { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); }
+        .tuss-highlight { border: 2px solid #4f46e5; position: relative; }
+        .tuss-highlight::before { content: "Бидний санал"; position: absolute; top: -12px; right: 20px; background: #4f46e5; color: white; padding: 2px 10px; border-radius: 20px; font-size: 10px; font-weight: bold; text-transform: uppercase; }
+        .gradient-text { background: linear-gradient(135deg, #4f46e5 0%, #10b981 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         html { scroll-behavior: smooth; }
-        .glass-nav { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); }
+        .company-card:hover { transform: translateY(-5px); transition: all 0.3s ease; }
     </style>
 </head>
-<body class="antialiased selection:bg-indigo-500 selection:text-white">
-    <nav class="sticky top-0 z-50 glass-nav border-b border-stone-200">
+<body class="antialiased">
+
+    <!-- Header / Navigation -->
+    <nav class="sticky top-0 z-50 glass-effect border-b border-slate-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
-                <div class="text-xl font-extrabold text-indigo-900 tracking-tight">📊 СИСТЕМ ХАРЬЦУУЛАЛТ</div>
-                <div class="hidden md:flex space-x-6 text-sm font-semibold text-stone-600">
-                    <a href="#guide" class="hover:text-indigo-600 transition-colors">Сонголт</a>
-                    <a href="#analysis" class="hover:text-indigo-600 transition-colors">Шинжилгээ</a>
-                    <a href="#pricing" class="hover:text-indigo-600 transition-colors">Үнэ</a>
+                <div class="text-xl font-extrabold tracking-tight flex items-center gap-2">
+                    <span class="bg-indigo-600 text-white p-1 rounded">📊</span> 
+                    <span class="text-slate-900">СИСТЕМ ШИНЖИЛГЭЭ</span>
+                </div>
+                <div class="hidden md:flex space-x-8 text-sm font-semibold">
+                    <a href="#hero" class="text-slate-600 hover:text-indigo-600 transition-colors">Эхлэл</a>
+                    <a href="#guide" class="text-slate-600 hover:text-indigo-600 transition-colors">Компаниуд</a>
+                    <a href="#analysis" class="text-slate-600 hover:text-indigo-600 transition-colors">Харьцуулалт</a>
+                    <a href="#matrix" class="text-slate-600 hover:text-indigo-600 transition-colors">Үзүүлэлтүүд</a>
+                    <a href="#pricing" class="text-slate-600 hover:text-indigo-600 transition-colors">Үнэ</a>
                 </div>
             </div>
         </div>
     </nav>
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-24 pb-20">
-        <header class="text-center max-w-5xl mx-auto space-y-6 pt-12">
-            <h1 class="text-3xl md:text-5xl font-extrabold text-stone-900 leading-tight">
-                Менежмент, Комплаенс болон <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-emerald-600">Баримт бичгийн цахим шийдлүүдийн</span> харьцуулалт
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-32">
+        
+        <!-- Hero Section -->
+        <header id="hero" class="text-center max-w-4xl mx-auto space-y-8 pt-10">
+            <div class="inline-block px-4 py-1.5 mb-4 text-xs font-bold tracking-widest text-indigo-600 uppercase bg-indigo-50 rounded-full">
+                2024 Оны Системүүдийн Тайлан
+            </div>
+            <h1 class="text-4xl md:text-6xl font-extrabold text-slate-900 leading-[1.1]">
+                Байгууллагын засаглалыг <span class="gradient-text">TUSS.io</span> системээр төгс шийдэх нь
             </h1>
+            <p class="text-lg text-slate-600 leading-relaxed max-w-2xl mx-auto">
+                Бид зах зээл дээрх шилдэг 4 системийг 17 үзүүлэлтээр харьцууллаа. Доорх картууд дээр дарж компани тус бүрийн давуу талтай танилцаарай.
+            </p>
         </header>
+
+        <!-- Company Introduction Section (Updated) -->
         <section id="guide" class="scroll-mt-24">
-            <div class="bg-white rounded-3xl shadow-xl shadow-stone-200/50 border border-stone-200 p-8 md:p-12">
-                <div class="mb-10 text-center max-w-2xl mx-auto">
-                    <h2 class="text-3xl font-bold text-stone-900 mb-4">🎯 Танд аль нь хэрэгтэй вэ?</h2>
-                    <p class="text-stone-500">Доорх сонголтуудаас өөрийн гол хэрэгцээг сонгож, тохирох шийдлийг олно уу.</p>
+            <div class="bg-white rounded-[2rem] shadow-xl shadow-slate-200/60 border border-slate-100 p-8 md:p-16">
+                <div class="text-center max-w-2xl mx-auto mb-12">
+                    <h2 class="text-3xl font-bold text-slate-900">🏢 Тэргүүлэгч компаниуд</h2>
+                    <p class="text-slate-500 mt-4 text-lg">Компани тус бүрийн карт дээр дарж дэлгэрэнгүй мэдээлэл харна уу.</p>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
-                    <button onclick="handleSelection('egeree')" class="p-6 text-left border-2 border-stone-100 rounded-2xl hover:border-emerald-500 hover:bg-emerald-50 transition-all focus:outline-none focus:ring-4 focus:ring-emerald-100 group">
-                        <div class="text-3xl mb-3">🖋️</div>
-                        <div class="font-bold text-lg group-hover:text-emerald-700">Гэрээ цахимжуулах</div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- TUSS.io Card -->
+                    <button onclick="handleSelection('tuss')" class="company-card group p-8 text-center border-2 border-slate-100 rounded-3xl hover:border-indigo-500 hover:bg-indigo-50 transition-all focus:ring-4 focus:ring-indigo-100 tuss-highlight">
+                        <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">⚙️</div>
+                        <h3 class="font-bold text-xl text-slate-900">TUSS.io</h3>
+                        <p class="text-xs font-bold text-indigo-600 mt-1 uppercase tracking-wider">Засаглал & Комплаенс</p>
                     </button>
-                    <button onclick="handleSelection('tuss')" class="p-6 text-left border-2 border-stone-100 rounded-2xl hover:border-indigo-500 hover:bg-indigo-50 transition-all focus:outline-none focus:ring-4 focus:ring-indigo-100 group">
-                        <div class="text-3xl mb-3">⚙️</div>
-                        <div class="font-bold text-lg group-hover:text-indigo-700">Засаглал & Стандарт</div>
+
+                    <!-- ABLE Card -->
+                    <button onclick="handleSelection('able')" class="company-card group p-8 text-center border-2 border-slate-100 rounded-3xl hover:border-amber-500 hover:bg-amber-50 transition-all">
+                        <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">👥</div>
+                        <h3 class="font-bold text-xl text-slate-900">ABLE</h3>
+                        <p class="text-xs font-bold text-amber-600 mt-1 uppercase tracking-wider">HR & Таск менежмент</p>
                     </button>
-                    <button onclick="handleSelection('able')" class="p-6 text-left border-2 border-stone-100 rounded-2xl hover:border-amber-500 hover:bg-amber-50 transition-all focus:outline-none focus:ring-4 focus:ring-amber-100 group">
-                        <div class="text-3xl mb-3">👥</div>
-                        <div class="font-bold text-lg group-hover:text-amber-700">HR & Таск менежмент</div>
+
+                    <!-- e-geree Card -->
+                    <button onclick="handleSelection('egeree')" class="company-card group p-8 text-center border-2 border-slate-100 rounded-3xl hover:border-emerald-500 hover:bg-emerald-50 transition-all">
+                        <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">🖋️</div>
+                        <h3 class="font-bold text-xl text-slate-900">e-geree.mn</h3>
+                        <p class="text-xs font-bold text-emerald-600 mt-1 uppercase tracking-wider">Цахим гэрээний шийдэл</p>
                     </button>
-                    <button onclick="handleSelection('gpt')" class="p-6 text-left border-2 border-stone-100 rounded-2xl hover:border-purple-500 hover:bg-purple-50 transition-all focus:outline-none focus:ring-4 focus:ring-purple-100 group">
-                        <div class="text-3xl mb-3">⚖️</div>
-                        <div class="font-bold text-lg group-hover:text-purple-700">Хуулийн AI зөвлөх</div>
+
+                    <!-- LegalGPT Card -->
+                    <button onclick="handleSelection('gpt')" class="company-card group p-8 text-center border-2 border-slate-100 rounded-3xl hover:border-purple-500 hover:bg-purple-50 transition-all">
+                        <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">⚖️</div>
+                        <h3 class="font-bold text-xl text-slate-900">LegalGPT</h3>
+                        <p class="text-xs font-bold text-purple-600 mt-1 uppercase tracking-wider">Хуулийн AI зөвлөх</p>
                     </button>
                 </div>
-                <div id="selectionResult" class="hidden rounded-2xl p-8 border-2 transition-all duration-500">
-                    <div id="selectionText" class="space-y-4"></div>
+
+                <!-- Detailed Information Panel -->
+                <div id="selectionResult" class="hidden mt-12 rounded-3xl p-10 border-2 transition-all duration-700">
+                    <div id="selectionText" class="flex flex-col md:flex-row items-center gap-10">
+                        <!-- Content injected by JS -->
+                    </div>
                 </div>
             </div>
         </section>
-        <section id="analysis" class="scroll-mt-24 space-y-12">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                <div class="space-y-6">
-                    <h2 class="text-3xl font-bold text-stone-900">📊 Функциональ Цар Хүрээ</h2>
-                    <p class="text-stone-600 leading-relaxed">
-                        Нийт 17 үндсэн үзүүлэлтээр системүүдийн боломжийг харьцуулав. <strong>TUSS.io</strong> систем нь байгууллагын засаглалын 16 функцийг агуулж байгаагаараа хамгийн өргөн цар хүрээтэй цогц систем болох нь харагдаж байна.
+
+        <!-- Visual Analysis -->
+        <section id="analysis" class="scroll-mt-24">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div class="space-y-8">
+                    <h2 class="text-4xl font-extrabold text-slate-900 tracking-tight">📊 Функциональ Цар Хүрээ</h2>
+                    <p class="text-lg text-slate-600 leading-relaxed">
+                        Нийт 17 үндсэн үзүүлэлтээр системүүдийн боломжийг үнэлэхэд <strong>TUSS.io</strong> систем нь байгууллагын засаглалын бараг бүх функцийг агуулж байгаагаараа хамгийн өндөр оноог авсан юм.
                     </p>
-                    <div class="space-y-4">
-                        <div class="flex items-center gap-3 text-sm font-medium text-stone-700">
-                            <span class="w-3 h-3 rounded-full bg-indigo-500"></span> Ажлын удирдлага
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="flex items-center gap-3 p-4 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                            <span class="w-4 h-4 rounded-full bg-indigo-500"></span>
+                            <span class="text-sm font-bold">Ажил удирдлага</span>
                         </div>
-                        <div class="flex items-center gap-3 text-sm font-medium text-stone-700">
-                            <span class="w-3 h-3 rounded-full bg-emerald-500"></span> Комплаенс ба Стандарт
+                        <div class="flex items-center gap-3 p-4 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                            <span class="w-4 h-4 rounded-full bg-emerald-500"></span>
+                            <span class="text-sm font-bold">Комплаенс</span>
                         </div>
-                        <div class="flex items-center gap-3 text-sm font-medium text-stone-700">
-                            <span class="w-3 h-3 rounded-full bg-amber-500"></span> Гэрээ ба Баримт бичиг
+                        <div class="flex items-center gap-3 p-4 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                            <span class="w-4 h-4 rounded-full bg-amber-500"></span>
+                            <span class="text-sm font-bold">Баримт бичиг</span>
                         </div>
                     </div>
                 </div>
-                <div class="bg-white rounded-3xl shadow-sm border border-stone-200 p-6 md:p-8">
+                <div class="bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200/40 border border-slate-100 p-8">
                     <div class="chart-container">
                         <canvas id="featureChart"></canvas>
                     </div>
                 </div>
             </div>
         </section>
-        <section id="matrix" class="scroll-mt-24 space-y-8">
-            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
-                <div>
-                    <h2 class="text-3xl font-bold text-stone-900">🗂️ Нарийвчилсан Чеклист</h2>
-                    <p class="text-stone-600 mt-2 leading-relaxed">Систем тус бүрийн боломжуудыг чиглэлээр нь шүүж харах.</p>
+
+        <!-- Detailed Matrix -->
+        <section id="matrix" class="scroll-mt-24 space-y-10">
+            <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+                <div class="max-w-xl">
+                    <h2 class="text-3xl font-extrabold text-slate-900">🗂️ Нарийвчилсан Чеклист</h2>
+                    <p class="text-slate-500 mt-2">Функциональ чиглэл тус бүрээр шүүж, системүүдийн нарийн боломжийг харна уу.</p>
                 </div>
-                <div class="w-full md:w-72">
-                    <select id="featureFilter" class="w-full bg-white border border-stone-300 text-stone-900 text-sm rounded-xl focus:ring-indigo-500 focus:border-indigo-500 block p-3 font-semibold outline-none">
+                <div class="w-full lg:w-80">
+                    <label class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block">Шүүлтүүр</label>
+                    <select id="featureFilter" class="w-full bg-white border-2 border-slate-100 text-slate-700 text-sm rounded-2xl focus:ring-indigo-500 focus:border-indigo-500 block p-4 font-bold outline-none shadow-sm">
                         <option value="all">Бүх үзүүлэлт (17)</option>
                         <option value="Work">1. Ажлын удирдлага</option>
                         <option value="Compliance">2. Комплаенс ба Стандарт</option>
@@ -114,142 +151,166 @@
                     </select>
                 </div>
             </div>
-            <div class="bg-white rounded-3xl shadow-sm border border-stone-200 overflow-hidden">
+
+            <div class="bg-white rounded-[2rem] shadow-xl shadow-slate-200/30 border border-slate-100 overflow-hidden">
                 <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left text-stone-600 min-w-[800px]">
-                        <thead class="text-xs text-stone-500 uppercase bg-stone-50 border-b border-stone-200">
+                    <table class="w-full text-sm text-left">
+                        <thead class="bg-slate-50 border-b border-slate-100">
                             <tr>
-                                <th scope="col" class="px-6 py-5 font-bold w-1/3">Функциональ чиглэл</th>
-                                <th scope="col" class="px-4 py-5 font-bold text-center w-1/6">e-geree.mn</th>
-                                <th scope="col" class="px-4 py-5 font-bold text-center w-1/6 text-indigo-600">TUSS.io</th>
-                                <th scope="col" class="px-4 py-5 font-bold text-center w-1/6 text-amber-600">ABLE</th>
-                                <th scope="col" class="px-4 py-5 font-bold text-center w-1/6 text-purple-600">LegalGPT.mn</th>
+                                <th class="px-8 py-6 font-bold text-slate-500 uppercase tracking-wider">Чиглэл & Боломжууд</th>
+                                <th class="px-6 py-6 font-bold text-center text-emerald-600">e-geree</th>
+                                <th class="px-6 py-6 font-bold text-center bg-indigo-50 text-indigo-700 border-x border-indigo-100">TUSS.io</th>
+                                <th class="px-6 py-6 font-bold text-center text-amber-600">ABLE</th>
+                                <th class="px-6 py-6 font-bold text-center text-purple-600">LegalGPT</th>
                             </tr>
                         </thead>
-                        <tbody id="matrixBody" class="divide-y divide-stone-100"></tbody>
+                        <tbody id="matrixBody" class="divide-y divide-slate-100">
+                            <!-- JS content -->
+                        </tbody>
                     </table>
                 </div>
             </div>
         </section>
-        <section id="pricing" class="scroll-mt-24 space-y-8">
-            <div class="text-center max-w-3xl mx-auto">
-                <h2 class="text-3xl font-bold text-stone-900">💰 Үнийн Харьцуулалт (Сард)</h2>
-                <p class="text-stone-600 mt-2">Багцуудын доод болон дээд үнийн хязгаарыг харьцуулав.</p>
+
+        <!-- Pricing Section -->
+        <section id="pricing" class="scroll-mt-24 space-y-12 pb-10">
+            <div class="text-center max-w-2xl mx-auto">
+                <h2 class="text-3xl font-extrabold text-slate-900 leading-tight">💰 Үнийн Харьцуулалт (Сард)</h2>
+                <p class="text-slate-500 mt-4">Байгууллагын хэмжээ болон ашиглах багцаас хамаарсан үнийн хязгаар.</p>
             </div>
-            <div class="bg-white rounded-3xl shadow-sm border border-stone-200 p-6 md:p-8">
-                <div class="chart-container">
+            
+            <div class="bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200/40 border border-slate-100 p-8 md:p-12">
+                <div class="chart-container mb-12">
                     <canvas id="priceChart"></canvas>
                 </div>
-                <div class="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div class="p-6 rounded-2xl bg-stone-50 border border-stone-100">
-                        <div class="font-bold text-stone-900 mb-1">e-geree.mn</div>
-                        <div class="text-2xl font-black text-emerald-600">33k - 150k ₮</div>
-                        <p class="text-xs text-stone-500 mt-2">Гэрээний тооноос хамаарна.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="p-6 rounded-3xl bg-slate-50 border border-slate-100">
+                        <span class="text-xs font-bold text-slate-400 uppercase">e-geree.mn</span>
+                        <div class="text-2xl font-black text-slate-800 mt-2">33k - 150k ₮</div>
                     </div>
-                    <div class="p-6 rounded-2xl bg-indigo-50 border border-indigo-100">
-                        <div class="font-bold text-indigo-900 mb-1">TUSS.io</div>
-                        <div class="text-2xl font-black text-indigo-600">24k - 350k ₮</div>
-                        <p class="text-xs text-stone-500 mt-2">Starter-аас Compliance хүртэл.</p>
+                    <div class="p-6 rounded-3xl bg-indigo-50 border border-indigo-100">
+                        <span class="text-xs font-bold text-indigo-400 uppercase">TUSS.io</span>
+                        <div class="text-2xl font-black text-indigo-700 mt-2">24k - 350k ₮</div>
                     </div>
-                    <div class="p-6 rounded-2xl bg-amber-50 border border-amber-100">
-                        <div class="font-bold text-amber-900 mb-1">ABLE</div>
-                        <div class="text-2xl font-black text-amber-600">41k - 416k ₮</div>
-                        <p class="text-xs text-stone-500 mt-2">500k-5M ₮/жил багцаас бодов.</p>
+                    <div class="p-6 rounded-3xl bg-slate-50 border border-slate-100">
+                        <span class="text-xs font-bold text-slate-400 uppercase">ABLE</span>
+                        <div class="text-2xl font-black text-slate-800 mt-2">41k - 416k ₮</div>
                     </div>
-                    <div class="p-6 rounded-2xl bg-purple-50 border border-purple-100">
-                        <div class="font-bold text-purple-900 mb-1">LegalGPT.mn</div>
-                        <div class="text-2xl font-black text-purple-600">49k - 99k ₮</div>
-                        <p class="text-xs text-stone-500 mt-2">Хуульч болон хувь хүнд.</p>
+                    <div class="p-6 rounded-3xl bg-slate-50 border border-slate-100">
+                        <span class="text-xs font-bold text-slate-400 uppercase">LegalGPT.mn</span>
+                        <div class="text-2xl font-black text-slate-800 mt-2">49k - 99k ₮</div>
                     </div>
                 </div>
             </div>
         </section>
+
     </main>
-    <footer class="bg-stone-900 text-stone-400 py-12 text-center text-sm border-t border-stone-800">
-        <div class="max-w-7xl mx-auto px-4">
-            <p>Эх сурвалж: Системүүдийн албан ёсны вэбсайт болон олон нийтэд ил тод үнийн мэдээлэл.</p>
-            <p class="mt-4 opacity-50">© 2024 Менежмент & Комплаенс Систем Харьцуулалт</p>
+
+    <footer class="bg-slate-900 text-slate-400 py-16 text-sm border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-4">
+            <p class="text-slate-200 font-bold">Систем Шинжилгээний Тайлан 2024</p>
+            <div class="pt-8 border-t border-slate-800 opacity-30">
+                &copy; Байгууллагын Менежмент & Комплаенс Харьцуулалт
+            </div>
         </div>
     </footer>
+
     <script>
-        const wrapLabels = (label, maxChars) => {
-            if (typeof label !== 'string') return label;
-            if (label.length <= maxChars) return label;
-            const words = label.split(' ');
-            const lines = [];
-            let currentLine = '';
-            words.forEach(word => {
-                if ((currentLine + word).length > maxChars) {
-                    if (currentLine.length > 0) lines.push(currentLine.trim());
-                    currentLine = word + ' ';
-                } else {
-                    currentLine += word + ' ';
-                }
-            });
-            if (currentLine.trim().length > 0) lines.push(currentLine.trim());
-            return lines;
-        };
-        const tooltipConfig = {
-            plugins: {
-                tooltip: {
-                    callbacks: {
-                        title: function(tooltipItems) {
-                            const item = tooltipItems[0];
-                            let label = item.chart.data.labels[item.dataIndex];
-                            return Array.isArray(label) ? label.join(' ') : label;
-                        }
-                    }
-                }
-            }
-        };
         const matrixData = [
             { cat: "Work", name: "Таск менежмент", e: false, t: true, a: true, l: false },
             { cat: "Work", name: "Төслийн төлөвлөлт", e: false, t: true, a: true, l: false },
             { cat: "Work", name: "Ажлын гүйцэтгэлийн тайлан", e: false, t: true, a: true, l: false },
             { cat: "Compliance", name: "Хуулийн нийцлийн зөвлөгөө", e: false, t: true, a: false, l: true },
             { cat: "Compliance", name: "ISO/ESG стандартын нийцэл", e: false, t: true, a: false, l: false },
-            { cat: "Compliance", name: "Зөрүүгийн шинжилгээ (Gap)", e: false, t: true, a: false, l: false },
+            { cat: "Compliance", name: "Зөрүүгийн шинжилгээ (Gap Analysis)", e: false, t: true, a: false, l: false },
             { cat: "Compliance", name: "Дотоод дүрэм журмын хяналт", e: false, t: true, a: true, l: false },
-            { cat: "Document", name: "Тоон гарын үсэг", e: true, t: true, a: false, l: false },
+            { cat: "Document", name: "Тоон гарын үсэг (ДАН)", e: true, t: true, a: false, l: false },
             { cat: "Document", name: "Гэрээний загвар боловсруулах", e: true, t: true, a: false, l: true },
             { cat: "Document", name: "Баримт бичгийн архив", e: true, t: true, a: true, l: false },
             { cat: "Document", name: "Албан бичиг шилжүүлэг", e: false, t: true, a: true, l: false },
             { cat: "ERP", name: "Дотоод чат, И-мэйл систем", e: false, t: false, a: true, l: false },
             { cat: "ERP", name: "Хүний нөөцийн удирдлага (HR)", e: false, t: true, a: true, l: false },
             { cat: "ERP", name: "Цаг бүртгэл, ирц", e: false, t: true, a: true, l: false },
-            { cat: "AI", name: "Хуулийн асуулт хариулт", e: false, t: true, a: false, l: true },
+            { cat: "AI", name: "Хуулийн асуулт хариулт (AI)", e: false, t: true, a: false, l: true },
             { cat: "AI", name: "Гэрээний эрсдэлийг AI хянах", e: false, t: true, a: false, l: true },
             { cat: "AI", name: "Автомат даалгавар үүсгэлт", e: false, t: true, a: false, l: false }
         ];
+
         function renderMatrix(filter) {
             const body = document.getElementById('matrixBody');
             body.innerHTML = '';
             matrixData.filter(d => filter === 'all' || d.cat === filter).forEach(row => {
                 const tr = document.createElement('tr');
-                tr.className = "hover:bg-stone-50 transition-colors";
+                tr.className = "hover:bg-slate-50 transition-colors group";
                 tr.innerHTML = `
-                    <td class="px-6 py-4 font-medium text-stone-800">${row.name}</td>
-                    <td class="px-4 py-4 text-center">${row.e ? '✅' : '❌'}</td>
-                    <td class="px-4 py-4 text-center bg-indigo-50/30">${row.t ? '✅' : '❌'}</td>
-                    <td class="px-4 py-4 text-center">${row.a ? '✅' : '❌'}</td>
-                    <td class="px-4 py-4 text-center">${row.l ? '✅' : '❌'}</td>
+                    <td class="px-8 py-5 font-semibold text-slate-700">${row.name}</td>
+                    <td class="px-6 py-5 text-center">${row.e ? '<span class="text-emerald-500">✅</span>' : '<span class="text-slate-200">❌</span>'}</td>
+                    <td class="px-6 py-5 text-center bg-indigo-50/50 border-x border-indigo-100/50">${row.t ? '<span class="text-indigo-600 font-bold">✅</span>' : '<span class="text-slate-200">❌</span>'}</td>
+                    <td class="px-6 py-5 text-center">${row.a ? '<span class="text-amber-500">✅</span>' : '<span class="text-slate-200">❌</span>'}</td>
+                    <td class="px-6 py-5 text-center">${row.l ? '<span class="text-purple-500">✅</span>' : '<span class="text-slate-200">❌</span>'}</td>
                 `;
                 body.appendChild(tr);
             });
         }
+
         function handleSelection(type) {
             const panel = document.getElementById('selectionResult');
             const content = document.getElementById('selectionText');
+            
             const data = {
-                egeree: { title: "e-geree.mn-г санал болгож байна", text: "Таны үндсэн зорилго гэрээгээ албан ёсоор цахимжуулах, ДАН системээр баталгаажуулах бол энэ системийг сонгоно уу.", color: "border-emerald-500 bg-emerald-50 text-emerald-900" },
-                tuss: { title: "TUSS.io-г санал болгож байна", text: "Комплайнсийн AI шинжилгээ болон ажлын удирдлага, менежментийн цогц платформ. Байгууллагын засаглалыг системчлэх, ISO/ESG стандарт нэвтрүүлж, үйл ажиллагааг бүхэлд нь хянах бол хамгийн зөв сонголт.", color: "border-indigo-500 bg-indigo-50 text-indigo-900" },
-                able: { title: "ABLE системийг санал болгож байна", text: "Байгууллагын өдөр тутмын ажил, ирц, дотоод таск менежмент болон хүний нөөцийн цогц систем шаардлагатай бол ABLE-ийг сонгоорой.", color: "border-amber-500 bg-amber-50 text-amber-900" },
-                gpt: { title: "LegalGPT.mn-г санал болгож байна", text: "Хуулийн мэдээлэл хурдан хайх, гэрээний төсөл боловсруулах болон эрсдэлээ AI-аар шалгуулах бол энэ туслахыг ашиглаарай.", color: "border-purple-500 bg-purple-50 text-purple-900" }
+                tuss: { 
+                    title: "TUSS.io - Удирдлагын цогц платформ", 
+                    text: "Монголын анхны засаглалын систем. ISO стандарт, ESG тайлан, комплаенс шинжилгээг хийхээс гадна байгууллагын бүх үйл ажиллагааг (Task, HR, Doc) нэг системд зангиддаг. Байгууллагын соёл, дэг журмыг системчлэхэд хамгийн тохиромжтой.", 
+                    color: "border-indigo-500 bg-indigo-50 text-indigo-900",
+                    img: "⚙️",
+                    features: ["ISO/ESG Нийцэл", "Ажлын удирдлага", "AI Комплаенс"]
+                },
+                able: { 
+                    title: "ABLE - HR & Дотоод үйл ажиллагаа", 
+                    text: "Олон жилийн туршлагатай, тогтвортой систем. Гол давуу тал нь хүний нөөцийн удирдлага, цаг бүртгэл болон байгууллагын дотоод таск менежмент юм. Монголын олон зуун байгууллага өдөр тутмын үйл ажиллагаандаа ашиглаж байна.", 
+                    color: "border-amber-500 bg-amber-50 text-amber-900",
+                    img: "👥",
+                    features: ["Хүний нөөц (HR)", "Цаг бүртгэл", "Таск менежмент"]
+                },
+                egeree: { 
+                    title: "e-geree.mn - Цахим гэрээний шийдэл", 
+                    text: "Гэрээ байгуулах үйл явцыг 100% цахимжуулсан систем. ДАН системээр дамжуулан баталгаажуулалт хийх, тоон гарын үсэг зурах болон гэрээний архивыг найдвартай хадгалахад чиглэгдсэн. Гэрээний загвар боловсруулах AI-тай.", 
+                    color: "border-emerald-500 bg-emerald-50 text-emerald-900",
+                    img: "🖋️",
+                    features: ["Тоон гарын үсэг", "Гэрээний архив", "ДАН систем"]
+                },
+                gpt: { 
+                    title: "LegalGPT - Хуулийн ухаалаг туслах", 
+                    text: "Хиймэл оюун ухаанд суурилсан хуулийн зөвлөх систем. Гэрээний эрсдэлийг хянах, хууль эрх зүйн асуултуудад хариулах, гэрээний төсөл секундын дотор боловсруулах боломжтой. Хуульчид болон бизнесийнхэнд зориулагдсан.", 
+                    color: "border-purple-500 bg-purple-50 text-purple-900",
+                    img: "⚖️",
+                    features: ["AI Хуулийн зөвлөх", "Эрсдэлийн шинжилгээ", "Гэрээ боловсруулалт"]
+                }
             };
+
             const rec = data[type];
-            panel.className = `mt-8 rounded-2xl p-8 border-2 transition-all duration-500 transform scale-100 opacity-100 ${rec.color}`;
-            content.innerHTML = `<h3 class="text-xl font-bold mb-2">✅ ${rec.title}</h3><p class="opacity-90 leading-relaxed">${rec.text}</p>`;
+            panel.classList.remove('hidden');
+            
+            let featureBadges = rec.features.map(f => `<span class="px-3 py-1 bg-white/60 rounded-full text-xs font-bold border border-current/20">${f}</span>`).join('');
+
+            content.innerHTML = `
+                <div class="text-7xl bg-white p-8 rounded-[2rem] shadow-sm shrink-0">${rec.img}</div>
+                <div class="space-y-4">
+                    <div class="flex flex-wrap gap-2">${featureBadges}</div>
+                    <h3 class="text-3xl font-black">${rec.title}</h3>
+                    <p class="text-lg opacity-90 leading-relaxed font-medium">${rec.text}</p>
+                    <div class="flex gap-4 pt-2">
+                        <button class="px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-all shadow-md">Вэбсайт руу зочлох</button>
+                        <button class="px-6 py-3 bg-white border border-slate-200 rounded-xl font-bold hover:bg-slate-50 transition-all">Үнэ үзэх</button>
+                    </div>
+                </div>
+            `;
+            
+            panel.className = `mt-12 rounded-[2rem] p-10 border-2 transition-all duration-700 transform scale-100 opacity-100 ${rec.color}`;
+            panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
+
         function initCharts() {
             const ctxFeat = document.getElementById('featureChart').getContext('2d');
             new Chart(ctxFeat, {
@@ -257,41 +318,38 @@
                 data: {
                     labels: ['e-geree', 'TUSS.io', 'ABLE', 'LegalGPT'],
                     datasets: [
-                        { label: wrapLabels('Ажлын удирдлага', 16), data: [0, 3, 3, 0], backgroundColor: '#818cf8' },
-                        { label: wrapLabels('Комплаенс ба Стандарт', 16), data: [0, 4, 1, 1], backgroundColor: '#10b981' },
-                        { label: wrapLabels('Гэрээ ба Баримт бичиг', 16), data: [3, 4, 2, 1], backgroundColor: '#f59e0b' }
+                        { label: 'Ажлын удирдлага', data: [0, 3, 3, 0], backgroundColor: '#6366f1' },
+                        { label: 'Комплаенс ба Стандарт', data: [0, 4, 1, 1], backgroundColor: '#10b981' },
+                        { label: 'Гэрээ ба Баримт бичиг', data: [3, 4, 2, 1], backgroundColor: '#f59e0b' },
+                        { label: 'AI & Бусад', data: [0, 5, 2, 2], backgroundColor: '#8b5cf6' }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    ...tooltipConfig,
-                    scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true, ticks: { stepSize: 2 } } }
+                    plugins: { legend: { position: 'bottom', labels: { font: { weight: 'bold' } } } },
+                    scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true } }
                 }
             });
+
             const ctxPrice = document.getElementById('priceChart').getContext('2d');
             new Chart(ctxPrice, {
                 type: 'bar',
                 data: {
                     labels: ['e-geree', 'TUSS.io', 'ABLE', 'LegalGPT'],
                     datasets: [
-                        { label: 'Доод үнэ (₮)', data: [33000, 24000, 41600, 49000], backgroundColor: '#a78bfa' },
+                        { label: 'Доод үнэ (₮)', data: [33000, 24000, 41600, 49000], backgroundColor: '#94a3b8' },
                         { label: 'Дээд үнэ (₮)', data: [150000, 350000, 416000, 99000], backgroundColor: '#4f46e5' }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    ...tooltipConfig,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: { callback: v => v / 1000 + 'k' }
-                        }
-                    }
+                    scales: { y: { beginAtZero: true, ticks: { callback: v => v / 1000 + 'k' } } }
                 }
             });
         }
+
         window.addEventListener('DOMContentLoaded', () => {
             renderMatrix('all');
             initCharts();
